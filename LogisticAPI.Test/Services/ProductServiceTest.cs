@@ -2,6 +2,7 @@
 using AutoMapper;
 using LogisticAPI.Entities;
 using LogisticAPI.Enums;
+using LogisticAPI.Mappers;
 using LogisticAPI.models;
 using LogisticAPI.Repository;
 using LogisticAPI.Services;
@@ -23,7 +24,7 @@ namespace LogisticAPI.Test.Services
         {
             mockMapper = new MapperConfiguration(cfg =>
            {
-               cfg.AddProfile(new AutoMapper()); //your automapperprofile 
+               cfg.AddProfile(new LogisticAutoMapper()); //your automapperprofile 
            });
             mapper = mockMapper.CreateMapper();
             TestPrincipal c = new TestPrincipal(new Claim("name", "John Doe"));

@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
 using Moq.EntityFrameworkCore;
 
@@ -17,7 +16,7 @@ namespace LogisticAPI.Test.Repositories
 {
     public class ProductRepositoyTest
     {
-        public string contextName = "Product";
+        public string contextName = "LogisticContext";
         public required IProductRepository repository;
         public Mock<IDbContextFactory> factory = new();
         public Mock<BaseContext> context = new();
