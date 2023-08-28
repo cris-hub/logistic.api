@@ -23,9 +23,8 @@ namespace LogisticAPI.Services
 
         public async Task<ProductResponse> CreateProduct(ProductRequest request)
         {
-            ClaimsIdentity? claim = ((ClaimsIdentity)_principal.Identity);
-            Claim? c = claim.Claims.FirstOrDefault(c => c.Type == "name");
-            request.UserId = c.Value;
+            ClaimsIdentity? claim = _principal.Identity as ClaimsIdentity;
+            request.UserId = claim?.Claims.FirstOrDefault(c => c.Type == "name").Value;
             double percentage = 0;
             Product entity = _mapper.Map<Product>(request);
 

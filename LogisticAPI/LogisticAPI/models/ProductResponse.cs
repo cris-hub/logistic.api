@@ -1,5 +1,5 @@
-﻿using LogisticAPI.Enums;
-using LogisticAPI.Test.Repositories;
+﻿using LogisticAPI.Entities;
+using LogisticAPI.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace LogisticAPI.models

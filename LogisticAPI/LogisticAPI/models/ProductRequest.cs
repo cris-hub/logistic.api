@@ -1,4 +1,4 @@
-﻿using LogisticAPI.Test.Repositories;
+﻿using LogisticAPI.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace LogisticAPI.models

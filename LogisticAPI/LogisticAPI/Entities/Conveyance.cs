@@ -1,14 +1,16 @@
-﻿using LogisticAPI.Enums;
+﻿using LogisticAPI.Attributes;
+using LogisticAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 
-namespace LogisticAPI.Test.Repositories
+namespace LogisticAPI.Entities
 {
     public class Conveyance
     {
-        public Conveyance()
-        {
-        }
 
+        [Required]
         public string Id { get; set; }
         public TransportEnum TransportType { get; set; }
+
+        public virtual ICollection<Product> Products { get; set; }
     }
 }
