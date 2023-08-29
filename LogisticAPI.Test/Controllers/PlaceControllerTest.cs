@@ -1,6 +1,7 @@
 ﻿using LogisticAPI.Controllers;
 using LogisticAPI.Entities;
 using LogisticAPI.models;
+using LogisticAPI.Models;
 using LogisticAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -21,6 +22,20 @@ namespace LogisticAPI.Test.Controllers
             service.Setup(c => c.CreatePlace(It.IsAny<PlaceRequest>())).ReturnsAsync(response);
 
             IActionResult result = await controller.CreatePlace(request);
+
+            Assert.NotNull(((ObjectResult)result).Value);
+            Assert.Equal((int)HttpStatusCode.OK, ((ObjectResult)result).StatusCode);
+        }
+
+
+        [Fact]
+        public async Task ListTestAsync()
+        {
+            List<PlaceResponse> response = new();
+            PlaceController controller = new PlaceController(service.Object);
+            service.Setup(c => c.GetPlaces()).ReturnsAsync(response);
+
+            IActionResult result = await controller.GetPlaces();
 
             Assert.NotNull(((ObjectResult)result).Value);
             Assert.Equal((int)HttpStatusCode.OK, ((ObjectResult)result).StatusCode);

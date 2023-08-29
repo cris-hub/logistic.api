@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AuthenticationAPI.test;
+using AutoMapper;
 using LogisticAPI.Entities;
 using LogisticAPI.Mappers;
 using LogisticAPI.models;
@@ -34,6 +35,22 @@ namespace LogisticAPI.Test.Services
             PlaceResponse actual = await service.CreatePlace(request);
 
             Assert.NotNull(actual);
+        }
+
+
+        [Fact]
+        public async Task ListTestAsync()
+        {
+            mock.Setup(c => c.GetPlaces()).ReturnsAsync(TestDataHelper.GetFakePlacesList());
+            
+
+
+            IEnumerable<PlaceResponse> actual = ((List<PlaceResponse>)await service.GetPlaces());
+
+
+            Assert.NotNull(actual);
+            Assert.True(actual.Any());
+
         }
     }
 }

@@ -5,5 +5,6 @@ namespace LogisticAPI.Repositories
     public interface IPlaceRepository
     {
         Task<Place> CreatePlace(Place place);
+        Task<List<Place>> GetPlaces();
     }
 }

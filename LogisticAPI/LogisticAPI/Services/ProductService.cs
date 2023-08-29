@@ -3,6 +3,7 @@ using AutoMapper;
 using LogisticAPI.Entities;
 using LogisticAPI.Enums;
 using LogisticAPI.models;
+using LogisticAPI.Repositories;
 using LogisticAPI.Repository;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -12,12 +13,14 @@ namespace LogisticAPI.Services
     public class ProductService : IProductService
     {
         private IProductRepository @object;
+        private readonly IConveyanceRepository object1;
         private readonly IMapper _mapper;
         private IPrincipal _principal;
-        public ProductService(IProductRepository @object, IMapper mapper, IPrincipal principal)
+        public ProductService(IProductRepository @object, IConveyanceRepository object1, IMapper mapper, IPrincipal principal)
         {
             _mapper = mapper;
             this.@object = @object;
+            this.object1 = object1;
             _principal = principal;
         }
 
@@ -27,7 +30,7 @@ namespace LogisticAPI.Services
             request.UserId = claim?.Claims.FirstOrDefault(c => c.Type == "name").Value;
             double percentage = 0;
             Product entity = _mapper.Map<Product>(request);
-
+            entity.Conveyance = await object1.GetById(request.ConveyanceId);
             if (entity.Amount > (int)DiscountAmountEnum.MORETHANTEN)
             {
                 if (entity.Conveyance.TransportType == TransportEnum.GROUND_TRANSPORT)

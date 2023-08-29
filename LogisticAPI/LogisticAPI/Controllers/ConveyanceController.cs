@@ -1,4 +1,5 @@
-﻿using LogisticAPI.Models;
+﻿using Azure.Core;
+using LogisticAPI.Models;
 using LogisticAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,13 @@ namespace LogisticAPI.Controllers
         public async Task<IActionResult> CreatePlace(ConveyanceRequest request)
         {
             var result = await @object.CreateConveyance(request);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetConvetances()
+        {
+            var result = await @object.GetConveyances();
             return Ok(result);
         }
     }

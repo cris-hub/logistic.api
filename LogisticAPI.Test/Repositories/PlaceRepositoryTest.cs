@@ -1,11 +1,15 @@
-﻿using LogisticAPI.DatabaseContext;
+﻿using AuthenticationAPI.test;
+using LogisticAPI.DatabaseContext;
 using LogisticAPI.Entities;
 using LogisticAPI.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Moq;
+using Moq.EntityFrameworkCore;
 
 namespace LogisticAPI.Test.Repositories
 {
@@ -22,7 +26,7 @@ namespace LogisticAPI.Test.Repositories
             repository = new PlaceRepository(factory.Object);
         }
         [Fact]
-        public async Task CreatePlaceAsync()
+        public async Task CreatePlaceTestAsync()
         {
             Place place = new Place();
             EntityEntry<Place> entry = CreateEntityMock(place);
@@ -33,6 +37,23 @@ namespace LogisticAPI.Test.Repositories
 
             Assert.NotNull(actual);
         }
+
+        [Fact]
+        public async Task GetPlacesTestAsync()
+        {
+            factory.Setup(c => c.GetContext(It.IsAny<string>())).Returns(context.Object);
+            context.Setup<DbSet<Place>>(x => x.Places).ReturnsDbSet(TestDataHelper.GetFakePlacesList());
+
+            repository = new PlaceRepository(factory.Object);
+
+
+            IEnumerable<Place> actual = (await repository.GetPlaces());
+
+
+            Assert.NotNull(actual);
+            Assert.True(actual.Any());
+        }
+
 
         private static EntityEntry<Place> CreateEntityMock(Place product)
         {

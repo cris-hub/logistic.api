@@ -16,7 +16,7 @@ namespace LogisticAPI.models
         public string UserId { get; set; }
         public string ProductType { get; set; }
         public double Price { get; set; }
-        public Conveyance Conveyance { get; set; }
-        public Place Place { get; set; }
+        public string ConveyanceId { get; set; }
+        public string PlaceId { get; set; }
     }
 }

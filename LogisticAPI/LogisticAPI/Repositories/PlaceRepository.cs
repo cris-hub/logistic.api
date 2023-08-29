@@ -1,5 +1,6 @@
 ﻿using LogisticAPI.DatabaseContext;
 using LogisticAPI.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace LogisticAPI.Repositories
 {
@@ -20,6 +21,12 @@ namespace LogisticAPI.Repositories
             var result = await db.AddAsync(place);
             await db.SaveChangesAsync();
             return result.Entity;
+        }
+
+        public Task<List<Place>> GetPlaces()
+        {
+            BaseContext db = @object.GetContext(context);
+            return db.Places.ToListAsync();
         }
     }
 }

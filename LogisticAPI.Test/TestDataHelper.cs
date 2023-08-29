@@ -23,5 +23,23 @@ namespace AuthenticationAPI.test
 
                 };
         }
+
+        public static List<Place> GetFakePlacesList()
+        {
+            return new List<Place>()
+                {
+                    new Place(){Country="Colombia",City="Bogota"}
+
+                };
+        }
+
+        public static List<Conveyance> GetFakeConveyancesList()
+        {
+            return new List<Conveyance>()
+                {
+                    new (){Id="ABC123",TransportType = LogisticAPI.Enums.TransportEnum.GROUND_TRANSPORT}
+
+                };
+        }
     }
 }

@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Moq;
 using LogisticAPI.DatabaseContext;
+using AuthenticationAPI.test;
+using Microsoft.EntityFrameworkCore;
+using Moq.EntityFrameworkCore;
 
 namespace LogisticAPI.Test.Repositories
 {
@@ -34,6 +37,21 @@ namespace LogisticAPI.Test.Repositories
             Assert.NotNull(actual);
         }
 
+        [Fact]
+        public async Task GetPlacesTestAsync()
+        {
+            factory.Setup(c => c.GetContext(It.IsAny<string>())).Returns(context.Object);
+            context.Setup<DbSet<Conveyance>>(x => x.Conveyances).ReturnsDbSet(TestDataHelper.GetFakeConveyancesList());
+
+            repository = new ConveyanceRepository(factory.Object);
+
+
+            IEnumerable<Conveyance> actual = ((List<Conveyance>)await repository.GetConveyances());
+
+
+            Assert.NotNull(actual);
+            Assert.True(actual.Any());
+        }
         private static EntityEntry<Conveyance> CreateEntityMock(Conveyance product)
         {
             var stateManagerMock = new Mock<IStateManager>();

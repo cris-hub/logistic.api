@@ -32,7 +32,7 @@ namespace LogisticAPI.Controllers
             ProductResponse reponse = await @object.GetById(id);
             return Ok(reponse);
         }
-        [HttpGet("user:id")]
+        [HttpGet("User")]
         [Authorize]
         public async Task<IActionResult> GetByUserId(string id)
         {

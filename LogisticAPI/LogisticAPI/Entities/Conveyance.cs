@@ -1,5 +1,4 @@
-﻿using LogisticAPI.Attributes;
-using LogisticAPI.Enums;
+﻿using LogisticAPI.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace LogisticAPI.Entities

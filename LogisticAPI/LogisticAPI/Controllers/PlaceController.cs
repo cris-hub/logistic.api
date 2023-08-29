@@ -1,5 +1,4 @@
-﻿using LogisticAPI.Entities;
-using LogisticAPI.models;
+﻿using LogisticAPI.models;
 using LogisticAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +21,13 @@ namespace LogisticAPI.Controllers
         public async Task<IActionResult> CreatePlace(PlaceRequest request)
         {
             var result = await @object.CreatePlace(request);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPlaces()
+        {
+            var result = await @object.GetPlaces();
             return Ok(result);
         }
     }

@@ -2,7 +2,7 @@
 
 namespace LogisticAPI.Models
 {
-    public class ConveyanceResponse : BaseResponse<ConveyanceResponse>
+    public class ConveyanceResponse : BaseResponse
     {
         public string Id { get; set; }
         public TransportEnum TransportType { get; set; }

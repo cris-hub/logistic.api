@@ -26,5 +26,12 @@ namespace LogisticAPI.Services
 
             return result;
         }
+
+        public async Task<List<PlaceResponse>> GetPlaces()
+        {
+            var entities = await @object.GetPlaces();
+            var result = mapper.Map<List<PlaceResponse>>(entities);
+            return result;
+        }
     }
 }
