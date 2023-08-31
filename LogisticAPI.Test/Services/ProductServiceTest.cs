@@ -2,10 +2,11 @@
 using AutoMapper;
 using LogisticAPI.Entities;
 using LogisticAPI.Enums;
+using LogisticAPI.Mappers;
 using LogisticAPI.models;
+using LogisticAPI.Repositories;
 using LogisticAPI.Repository;
 using LogisticAPI.Services;
-using LogisticAPI.Test.Repositories;
 using Moq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -14,7 +15,9 @@ namespace LogisticAPI.Test.Services
 {
     public class ProductServiceTest
     {
-        Mock<IProductRepository> repository = new();
+        Mock<IProductRepository> productRepository = new();
+        Mock<IConveyanceRepository> conveyanceRepository = new();
+
         Mock<IPrincipal> principal = new();
         IProductService productService;
         MapperConfiguration mockMapper;
@@ -23,13 +26,13 @@ namespace LogisticAPI.Test.Services
         {
             mockMapper = new MapperConfiguration(cfg =>
            {
-               cfg.AddProfile(new AutoMapper()); //your automapperprofile 
+               cfg.AddProfile(new LogisticAutoMapper()); //your automapperprofile 
            });
             mapper = mockMapper.CreateMapper();
-            TestPrincipal c = new TestPrincipal(new Claim("name", "John Doe"));
-            principal.SetupGet(c => c.Identity).Returns(c.Identity);
+            TestPrincipal principalMock = new TestPrincipal(new Claim("name", "John Doe"));
+            principal.SetupGet(c => c.Identity).Returns(principalMock.Identity);
 
-            productService = new ProductService(repository.Object, mapper, principal.Object);
+            productService = new ProductService(productRepository.Object, conveyanceRepository.Object, mapper, principal.Object);
         }
 
 
@@ -42,23 +45,14 @@ namespace LogisticAPI.Test.Services
                 DeliveryDay = new DateTime(2069, 05, 09, 9, 15, 0),
                 Amount = 11,
                 ProductType = "PC",
-                Conveyance = new Conveyance()
-                {
-                    Id = "CFV-231",
-                    TransportType = TransportEnum.MARINE_TRANSPORT
-                },
+                ConveyanceId = "ABC1234D",
                 Price = 100,
-                Place = new Place()
-                {
-                    Id = "",
-                    PlaceType = PlaceEnum.PORT,
-                    City = "",
-                    Country = ""
-                },
+                PlaceId = "id",
             };
             Product entity = new() { };
-
-            repository.Setup(c => c.CreateProduct(It.IsAny<Product>())).ReturnsAsync(entity);
+            Conveyance conveyance = new() { Id = "ABC1234D",TransportType = TransportEnum.MARINE_TRANSPORT };
+            conveyanceRepository.Setup(c => c.GetById(It.IsAny<string>())).ReturnsAsync(conveyance).Verifiable();
+            productRepository.Setup(c => c.CreateProduct(It.IsAny<Product>())).ReturnsAsync(entity).Verifiable();
 
             ProductResponse actual = await productService.CreateProduct(expected);
 
@@ -79,23 +73,14 @@ namespace LogisticAPI.Test.Services
                 DeliveryDay = new DateTime(2069, 05, 09, 9, 15, 0),
                 Amount = 11,
                 ProductType = "PC",
-                Conveyance = new Conveyance()
-                {
-                    Id = "CFV-231",
-                    TransportType = TransportEnum.GROUND_TRANSPORT
-                },
+                ConveyanceId = "ABC123",
                 Price = 100,
-                Place = new Place()
-                {
-                    Id = "",
-                    PlaceType = PlaceEnum.PORT,
-                    City = "",
-                    Country = ""
-                },
+                PlaceId = "id",
             };
             Product entity = new() { };
-
-            repository.Setup(c => c.CreateProduct(It.IsAny<Product>())).ReturnsAsync(entity);
+            Conveyance conveyance = new() { Id = "ABC123", TransportType = TransportEnum.GROUND_TRANSPORT };
+            conveyanceRepository.Setup(c => c.GetById(It.IsAny<string>())).ReturnsAsync(conveyance).Verifiable();
+            productRepository.Setup(c => c.CreateProduct(It.IsAny<Product>())).ReturnsAsync(entity);
 
             ProductResponse actual = await productService.CreateProduct(expected);
 
@@ -113,24 +98,16 @@ namespace LogisticAPI.Test.Services
             ProductRequest expected = new()
             {
                 DeliveryDay = new DateTime(2069, 05, 09, 9, 15, 0),
-                Amount = 1,
+                Amount = 11,
                 ProductType = "PC",
-                Conveyance = new Conveyance()
-                {
-                    Id = "CFV-231",
-                    TransportType = TransportEnum.GROUND_TRANSPORT
-                },
-                Place = new Place()
-                {
-                    Id = "",
-                    PlaceType = PlaceEnum.PORT,
-                    City = "",
-                    Country = ""
-                },
+                ConveyanceId = "",
+                Price = 100,
+                PlaceId = "id",
             };
             Product entity = new() { };
-
-            repository.Setup(c => c.CreateProduct(It.IsAny<Product>())).ReturnsAsync(entity);
+            Conveyance conveyance = new() { Id = "ABC123", TransportType = TransportEnum.GROUND_TRANSPORT };
+            conveyanceRepository.Setup(c => c.GetById(It.IsAny<string>())).ReturnsAsync(conveyance).Verifiable();
+            productRepository.Setup(c => c.CreateProduct(It.IsAny<Product>())).ReturnsAsync(entity);
 
             ProductResponse actual = await productService.CreateProduct(expected);
 
@@ -144,7 +121,7 @@ namespace LogisticAPI.Test.Services
         public async Task GetProdutsByUserIdAsync()
         {
             string userId = "1234";
-            repository.Setup(c => c.GetByUserIdAsync(It.IsAny<string>())).ReturnsAsync(TestDataHelper.GetFakeProductsList()).Verifiable();
+            productRepository.Setup(c => c.GetByUserIdAsync(It.IsAny<string>())).ReturnsAsync(TestDataHelper.GetFakeProductsList()).Verifiable();
 
 
             IEnumerable<ProductResponse> produdts = await productService.GetProdutsByUserId(userId);
@@ -158,7 +135,7 @@ namespace LogisticAPI.Test.Services
         {
             string idProduct = "ABC1234D";
             var entity = new Product();
-            repository.Setup(c => c.GetById(It.IsAny<string>())).ReturnsAsync(entity).Verifiable();
+            productRepository.Setup(c => c.GetById(It.IsAny<string>())).ReturnsAsync(entity).Verifiable();
 
             var actual = await productService.GetById(idProduct);
 

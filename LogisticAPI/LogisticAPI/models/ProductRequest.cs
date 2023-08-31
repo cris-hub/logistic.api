@@ -1,4 +1,4 @@
-﻿using LogisticAPI.Test.Repositories;
+﻿using LogisticAPI.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace LogisticAPI.models
@@ -13,10 +13,9 @@ namespace LogisticAPI.models
         [Required]
         public DateTime DeliveryDay { get; set; }
         [Required]
-        public string UserId { get; set; }
         public string ProductType { get; set; }
         public double Price { get; set; }
-        public Conveyance Conveyance { get; set; }
-        public Place Place { get; set; }
+        public string ConveyanceId { get; set; }
+        public string PlaceId { get; set; }
     }
 }

@@ -27,6 +27,12 @@ namespace LogisticAPI
 
             });
 
+            builder.RegisterType<PlaceRepository>().As<IPlaceRepository>();
+            builder.RegisterType<PlaceService>().As<IPlaceService>();
+
+            builder.RegisterType<ConveyanceRepository>().As<IConveyanceRepository>();
+            builder.RegisterType<ConveyanceService>().As<IConveyanceService>();
+
             builder.RegisterType<ProductRepository>().As<IProductRepository>();
             builder.RegisterType<ProductService>().As<IProductService>();
 

@@ -3,6 +3,7 @@ using AutoMapper;
 using LogisticAPI.Entities;
 using LogisticAPI.Enums;
 using LogisticAPI.models;
+using LogisticAPI.Repositories;
 using LogisticAPI.Repository;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -12,23 +13,24 @@ namespace LogisticAPI.Services
     public class ProductService : IProductService
     {
         private IProductRepository @object;
+        private readonly IConveyanceRepository object1;
         private readonly IMapper _mapper;
         private IPrincipal _principal;
-        public ProductService(IProductRepository @object, IMapper mapper, IPrincipal principal)
+        public ProductService(IProductRepository @object, IConveyanceRepository object1, IMapper mapper, IPrincipal principal)
         {
             _mapper = mapper;
             this.@object = @object;
+            this.object1 = object1;
             _principal = principal;
         }
 
         public async Task<ProductResponse> CreateProduct(ProductRequest request)
         {
-            ClaimsIdentity? claim = ((ClaimsIdentity)_principal.Identity);
-            Claim? c = claim.Claims.FirstOrDefault(c => c.Type == "name");
-            request.UserId = c.Value;
-            double percentage = 0;
             Product entity = _mapper.Map<Product>(request);
-
+            ClaimsIdentity? claim = _principal.Identity as ClaimsIdentity;
+            entity.UserId = claim?.Claims.FirstOrDefault(c => c.Type == "name").Value;
+            double percentage = 0;
+            entity.Conveyance = await object1.GetById(request.ConveyanceId);
             if (entity.Amount > (int)DiscountAmountEnum.MORETHANTEN)
             {
                 if (entity.Conveyance.TransportType == TransportEnum.GROUND_TRANSPORT)
@@ -54,9 +56,8 @@ namespace LogisticAPI.Services
 
             entity.Id = RandomAlfanumericId();
             entity.Created = new DateTime();
-            ProductResponse response = _mapper.Map<ProductResponse>(entity);
             Product productCreated = await @object.CreateProduct(entity);
-            response.Id = entity.Id;
+            ProductResponse response = _mapper.Map<ProductResponse>(entity);
             return response;
         }
 
@@ -80,6 +81,15 @@ namespace LogisticAPI.Services
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, 10)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public async Task<IEnumerable<ProductResponse>> GetProdutsByUserId()
+        {
+            ClaimsIdentity? claim = _principal.Identity as ClaimsIdentity;
+            string userId = claim?.Claims.FirstOrDefault(c => c.Type == "name").Value;
+            var response = await @object.GetByUserIdAsync(userId);
+            var result = _mapper.Map<IEnumerable<ProductResponse>>(response);
+            return result;
         }
     }
 }

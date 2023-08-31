@@ -2,6 +2,7 @@
 using LogisticAPI.Entities;
 using LogisticAPI.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace LogisticAPI.Repositories
 {
@@ -18,22 +19,24 @@ namespace LogisticAPI.Repositories
         public async Task<Product> CreateProduct(Product entity)
         {
             BaseContext db = @object.GetContext(context);
-            var result = await db.AddAsync(entity);
+            var result = await db.Products.AddAsync(entity);
+
             await db.SaveChangesAsync();
-            return result.Entity;
+
+            return await db.Products.Include(c => c.Place).FirstOrDefaultAsync(c => c.Id == result.Entity.Id);
         }
 
         public Task<Product> GetById(string id)
         {
             BaseContext db = @object.GetContext(context);
-            return db.Products.FirstOrDefaultAsync(c => c.Id == id);
+            return db.Products.Include(c => c.Conveyance).Include(c => c.Place).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public Task<List<Product>> GetByUserIdAsync(string id)
 
         {
             BaseContext db = @object.GetContext(context);
-            return db.Products.Where(c => c.UserId == id).ToListAsync();
+            return db.Products.Include(c => c.Conveyance).Include(c => c.Place).Where(c => c.UserId == id).ToListAsync();
         }
     }
 }
