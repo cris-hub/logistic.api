@@ -16,7 +16,6 @@ namespace LogisticAPI.DatabaseContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Modern_Spanish_CI_AS");
-
             OnModelCreatingPartial(modelBuilder);
         }
 

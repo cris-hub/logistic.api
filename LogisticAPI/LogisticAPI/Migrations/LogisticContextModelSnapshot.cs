@@ -23,6 +23,19 @@ namespace LogisticAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("LogisticAPI.Entities.Conveyance", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("TransportType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Conveyances");
+                });
+
             modelBuilder.Entity("LogisticAPI.Entities.Place", b =>
                 {
                     b.Property<string>("Id")
@@ -93,23 +106,9 @@ namespace LogisticAPI.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("LogisticAPI.Test.Repositories.Conveyance", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TransportType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Conveyances");
-                });
-
             modelBuilder.Entity("LogisticAPI.Entities.Product", b =>
                 {
-                    b.HasOne("LogisticAPI.Test.Repositories.Conveyance", "Conveyance")
+                    b.HasOne("LogisticAPI.Entities.Conveyance", "Conveyance")
                         .WithMany("Products")
                         .HasForeignKey("ConveyanceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -126,12 +125,12 @@ namespace LogisticAPI.Migrations
                     b.Navigation("Place");
                 });
 
-            modelBuilder.Entity("LogisticAPI.Entities.Place", b =>
+            modelBuilder.Entity("LogisticAPI.Entities.Conveyance", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("LogisticAPI.Test.Repositories.Conveyance", b =>
+            modelBuilder.Entity("LogisticAPI.Entities.Place", b =>
                 {
                     b.Navigation("Products");
                 });

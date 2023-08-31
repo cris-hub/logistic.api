@@ -8,5 +8,6 @@ namespace LogisticAPI.Services
         Task<ProductResponse> CreateProduct(ProductRequest request);
         Task<ProductResponse> GetById(string id);
         Task<IEnumerable<ProductResponse>> GetProdutsByUserId(string userId);
+        Task<IEnumerable<ProductResponse>> GetProdutsByUserId();
     }
 }

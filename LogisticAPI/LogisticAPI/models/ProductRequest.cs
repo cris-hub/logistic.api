@@ -13,7 +13,6 @@ namespace LogisticAPI.models
         [Required]
         public DateTime DeliveryDay { get; set; }
         [Required]
-        public string UserId { get; set; }
         public string ProductType { get; set; }
         public double Price { get; set; }
         public string ConveyanceId { get; set; }

@@ -26,17 +26,23 @@ namespace LogisticAPI.Controllers
             return Ok(reponse);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
             ProductResponse reponse = await @object.GetById(id);
             return Ok(reponse);
         }
-        [HttpGet("User")]
-        [Authorize]
+        [HttpGet("User/{id}")]
         public async Task<IActionResult> GetByUserId(string id)
         {
             IEnumerable<ProductResponse> reponse = await @object.GetProdutsByUserId(id);
+            return Ok(reponse);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByAuthenticate()
+        {
+            IEnumerable<ProductResponse> reponse = await @object.GetProdutsByUserId();
             return Ok(reponse);
         }
     }
